@@ -5,6 +5,15 @@
 #include "paleta.h"
 
 /**
+ * @brief Tipo para definir uma única Pixel no formato.
+ */
+struct Pixel {
+    unsigned int r; ///< Componente vermelho (0 - 255)
+    unsigned int g; ///< Componente verde (0 - 255)
+    unsigned int b; ///< Componente azul (0 - 255)
+};
+
+/**
  * @brief Classe para representar uma imagem no formato PPM.
  */
 class Imagem {

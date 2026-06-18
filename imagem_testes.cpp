@@ -2,6 +2,8 @@
 #include "doctest.h"
 #include "imagem.h"
 
+using Pixel = Cor;
+
 TEST_CASE("Testa a criação de uma imagem com largura e altura específicas") {
     Imagem img(100, 50);
     CHECK(img.obterLargura() == 100);
