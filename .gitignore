@@ -1,2 +1,6 @@
 *.o
 *.out
+cores.hex
+doctest.hex
+README.md
+paleta
