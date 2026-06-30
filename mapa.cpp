@@ -33,16 +33,27 @@ int MapaAltitudes::obterColunas() {
 void MapaAltitudes::gerarMapaAltitudes(unsigned int n, float rugosidade) {
     std::srand(std::time(0));
 
+    //(lin, col) = lin * tamanho + col
     int supEsquerda = 0;
     int supDireito = this->tamanho - 1;
     int infEsquerdo = (this->tamanho - 1) * this->tamanho + 0;
     int infDireito = (this->tamanho - 1) * this->tamanho + (this->tamanho - 1);
 
+    //gera altitudes aleatórias em cada extremo do mapa
     this->mapa[supEsquerda] = (float)rand() / RAND_MAX; // canto superior esquerdo
     this->mapa[supDireito] = (float)rand() / RAND_MAX; // canto superior direito
     this->mapa[infEsquerdo] = (float)rand() / RAND_MAX; // canto inferior esquerdo
     this->mapa[infDireito] = (float)rand() / RAND_MAX; // canto inferior direito
 
+    int meio = (this->tamanho - 1) / 2;
+
+    float media = (this->mapa[supEsquerda] + this->mapa[supDireito] + this->mapa[infEsquerdo] + this->mapa[infDireito]) / 4.0;
+
+    float deslocamento = ((float)rand() / RAND_MAX) * 2.0 - 1.0; // entre -1 e 1
+    
+    float escala = 1.0;
+    
+    this->mapa[meio * this->tamanho + meio] = media + deslocamento * escala;   
     
 }
 
