@@ -62,6 +62,24 @@ class MapaAltitudes {
      * @return true (se for bem sucedido) ou false (se for mal sucedido).
      */
     bool lerMapaAltitudes(std::string nomeArquivo);
+
+    /**
+     * @brief Executa a etapa Diamond do algoritmo Diamond-Square para calcular a altitude do ponto central de um quadrado.
+     * @param linha Linha correspondente ao canto superior esquerdo do subquadrado atual.
+     * @param coluna Coluna correspondente ao canto superior esquerdo do subquadrado atual.
+     * @param passo Tamanho da aresta do subquadrado atual.
+     * @param escala Fator multiplicador que define a intensidade máxima do ruído aleatório.
+     */
+    void diamond(int linha, int coluna, int passo, float escala);
+
+    /**
+     * @brief Executa a etapa Square do algoritmo Diamond-Square para calcular a altitude do ponto médio das arestas.
+     * @param linha Linha onde se localiza o ponto médio da aresta a ser calculado.
+     * @param coluna Coluna onde se localiza o ponto médio da aresta a ser calculado.
+     * @param passo Tamanho da aresta do subquadrado atual.
+     * @param escala Fator multiplicador que define a intensidade máxima do ruído aleatório.
+     */
+    void square(int linha, int coluna, int passo, float escala);
 };
 
 #endif
