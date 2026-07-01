@@ -1,3 +1,5 @@
+#include <iostream>
+#include <iomanip>
 #include "mapa.h"
 #include <fstream>
 #include <string>
@@ -105,7 +107,44 @@ int MapaAltitudes::obterColunas() {
 }
 
 void MapaAltitudes::gerarMapaAltitudes(unsigned int n, float rugosidade) {
-    
+    // 1. O tamanho já foi calculado no construtor como pow(2, n) + 1
+    int passo = this->tamanho - 1;
+    float escala = 1.0f;
+
+    // 2. Inicializar os 4 cantos da matriz inteira com valores aleatórios entre 0.0 e 1.0
+    this->mapa[0 * this->tamanho + 0] = static_cast<float>(rand()) / RAND_MAX;                 // Sup. Esquerdo
+    this->mapa[0 * this->tamanho + passo] = static_cast<float>(rand()) / RAND_MAX;             // Sup. Direito
+    this->mapa[passo * this->tamanho + 0] = static_cast<float>(rand()) / RAND_MAX;             // Inf. Esquerdo
+    this->mapa[passo * this->tamanho + passo] = static_cast<float>(rand()) / RAND_MAX;         // Inf. Direito
+
+    // 3. Loop principal do algoritmo Diamond-Square
+    while (passo > 1) {
+        int metade = passo / 2;
+
+        // --- ETAPA DIAMOND ---
+        // Aplica o método diamond no centro de cada subquadrado
+        for (int i = 0; i < this->tamanho - 1; i += passo) {
+            for (int j = 0; j < this->tamanho - 1; j += passo) {
+                this->diamond(i, j, passo, escala);
+            }
+        }
+
+        // --- ETAPA SQUARE ---
+        // Aplica o método square nos pontos médios das arestas.
+        // O mapeamento abaixo garante que passamos por todos os "diamantes" gerados.
+        for (int i = 0; i < this->tamanho; i += metade) {
+            // Se a linha for par, deslocamos a coluna inicial para pegar os pontos alternados
+            int deslocamentoColuna = (i % passo == 0) ? metade : 0;
+            
+            for (int j = deslocamentoColuna; j < this->tamanho; j += passo) {
+                this->square(i, j, passo, escala);
+            }
+        }
+
+        // 4. Reduzir o passo e atualizar a escala com base na rugosidade para a próxima iteração
+        passo /= 2;
+        escala *= rugosidade;
+    }
 }
 
 bool MapaAltitudes::salvarMapaAltitudes(std::string nomeArquivo) {
@@ -155,4 +194,32 @@ bool MapaAltitudes::lerMapaAltitudes(std::string nomeArquivo) {
     }
 
     return false;
+}
+
+int main() {
+    // 1. Inicializa a semente aleatória para os resultados mudarem a cada execução
+    srand(time(0));
+
+    // 2. Cria um mapa com n = 2 -> tamanho = pow(2, 2) + 1 = 5 (matriz 5x5)
+    unsigned int n = 2;
+    float rugosidade = 0.5f;
+    
+    MapaAltitudes meuMapa(n);
+
+    // 3. Executa o algoritmo
+    meuMapa.gerarMapaAltitudes(n, rugosidade);
+
+    // 4. Imprime o mapa no terminal para inspecionar visualmente
+    int tamanho = meuMapa.obterLinhas(); // ou obterColunas()
+    
+    std::cout << "--- MAPA DE ALTITUDES GERADO (" << tamanho << "x" << tamanho << ") ---" << std::endl;
+    for (int i = 0; i < tamanho; ++i) {
+        for (int j = 0; j < tamanho; ++j) {
+            // Imprime formatado com 2 casas decimais para ficar alinhado
+            std::cout << std::fixed << std::setprecision(2) << meuMapa.obterAltitude(i, j) << "  ";
+        }
+        std::cout << std::endl;
+    }
+
+    return 0;
 }
